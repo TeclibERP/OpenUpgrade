@@ -12,15 +12,32 @@ _logger = logging.getLogger(__name__)
 
 @openupgrade.migrate(use_env=False)
 def migrate(cr, version):
+
     """
     Fix error on mailing_contact_res_partner_category_rel
-    #ERROR: odoo.sql_db: bad query:
+    ERROR: odoo.sql_db: bad query:
             ALTER TABLE "mailing_contact_res_partner_category_rel"
             ADD FOREIGN KEY ("mailing_contact_id") REFERENCES "mailing_contact"("id") ON DELETE cascade
-    #ERROR: column "mailing_contact_id" referenced in foreign key constraint does not exist
+    column "mailing_contact_id" referenced in foreign key constraint does not exist
     """
     cr.execute(
         """ ALTER TABLE mailing_contact_res_partner_category_rel
     RENAME mail_mass_mailing_contact_id TO mailing_contact_id;
+    """
+    )
+
+    """
+    Fix error on mail_mass_mailing_list_rel
+    ERROR: odoo.sql_db: bad query:
+            ALTER TABLE "mail_mass_mailing_list_rel"
+            ADD FOREIGN KEY ("mailing_mailing_id")
+            REFERENCES "mailing_mailing"("id") ON DELETE cascade
+    column "mailing_mailing_id" referenced in foreign key constraint does not exist
+    """
+    cr.execute(
+        """ ALTER TABLE mail_mass_mailing_list_rel
+    RENAME mail_mass_mailing_id TO mailing_mailing_id;
+    ALTER TABLE public.mail_mass_mailing_list_rel
+    RENAME mail_mass_mailing_list_id TO mailing_list_id;
     """
     )
