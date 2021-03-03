@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 
 @openupgrade.migrate(use_env=False)
 def migrate(cr, version):
-    
+
     # Fix error on _process_ondelete
     cr.execute(
         """ DELETE FROM ir_model WHERE model='base.automation.lead.test';
