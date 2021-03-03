@@ -23,6 +23,12 @@ def migrate(cr, version):
     """
     cr.execute(
         """ ALTER TABLE account_reconcile_model_analytic_tag_rel
-    RENAME account_reconcile_model_id TO account_reconcile_model_line_id;
+        RENAME account_reconcile_model_id TO account_reconcile_model_line_id;
+    """
+    )
+
+    # Fix error on _process_ondelete
+    cr.execute(
+        """ DELETE FROM ir_model WHERE model='account.accrual.accounting.wizard';
     """
     )
